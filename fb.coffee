@@ -6,7 +6,7 @@ class FBClient
   constructor: ->
     @initFB()
   initFB: ->
-	FB.init
+    FB.init
       appId      : APP_ID
       channelUrl : "//#{HOST_NAME}/channel.html"
       status     : true, # check login status
@@ -37,8 +37,6 @@ class FBClient
 class FBUser
   constructor: ->
     FB.api '/me', (response) =>
-      console.log @
-      # self.data = response
       @name = response.name  
       console.log "Welcome #{@name}"       
     
