@@ -1,9 +1,9 @@
+root = exports ? this
+
 class FBClient 
   APP_ID    = '' # Your FB app ID
   HOST_NAME = '' # Your hostname for the channel file
-  self      = @  # is it proper way to deal with closure 'this' issue?
   constructor: ->
-    self = @ # is it proper way to deal with closure 'this' issue?
     @initFB()
   initFB: ->
   	FB.init
@@ -13,35 +13,37 @@ class FBClient
       cookie     : true, # enable cookies to allow the server to access the session
       xfbml      : true  # parse XFBML
     @verifyStatus()
+    
   verifyStatus: ->
-    FB.getLoginStatus (response)->
+    FB.getLoginStatus (response) =>
+      console.log 'status: ', response.status
       switch response.status
         when 'connected'
-          self.uid = response.authResponse.userID
-          self.accessToken = response.authResponse.accessToken
+          @uid = response.authResponse.userID
+          @accessToken = response.authResponse.accessToken
           console.log 'Welcome back.'
           fbUser = new FBUser() unless fbUser
-        when 'not_authorized' then self.loginFB()
+        when 'not_authorized', 'unknown' then @loginFB()
         else no
         
   loginFB: ->
-    FB.login (response)->
+    FB.login (response) =>
       console.log 'User cancelled login or did not fully authorize.' unless response.authResponse    
       if response.authResponse
         console.log 'Welcome!  Fetching your information.... '
         fbUser = new FBUser() unless fbUser
-    , {scope: 'email, user_likes'}
+    , {scope: 'publish_actions'}
     
 class FBUser
-  self = @
   constructor: ->
-    self = @
-    FB.api '/me', (response) ->
+    FB.api '/me', (response) =>
+      console.log @
       # self.data = response
-      self.name = response.name  
-      console.log "Welcome #{self.name}"    
+      @name = response.name  
+      console.log "Welcome #{@name}"       
     
 fbUser = null
+
 
 window.fbAsyncInit = ->
 	fbClient = new FBClient()
