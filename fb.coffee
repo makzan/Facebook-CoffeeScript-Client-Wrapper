@@ -6,7 +6,7 @@ class FBClient
   constructor: ->
     @initFB()
   initFB: ->
-  	FB.init
+	FB.init
       appId      : APP_ID
       channelUrl : "//#{HOST_NAME}/channel.html"
       status     : true, # check login status
